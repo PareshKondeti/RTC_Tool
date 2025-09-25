@@ -1,0 +1,42 @@
+/* eslint-disable import/no-anonymous-default-export */
+/**
+ * RTC Tool - Real-Time Collaborative Editor
+ * Author: Paresh Kondeti
+ * Date: January 2025
+ * Theme configuration for the collaborative editor
+ */
+export default {
+  code: 'editor-code',
+  heading: {
+    h1: 'editor-heading-h1',
+    h2: 'editor-heading-h2',
+    h3: 'editor-heading-h3',
+    h4: 'editor-heading-h4',
+    h5: 'editor-heading-h5',
+  },
+  image: 'editor-image',
+  link: 'editor-link',
+  list: {
+    listitem: 'editor-listitem',
+    nested: {
+      listitem: 'editor-nested-listitem',
+    },
+    ol: 'editor-list-ol',
+    ul: 'editor-list-ul',
+  },
+  ltr: 'ltr',
+  paragraph: 'editor-paragraph',
+  placeholder: 'editor-placeholder',
+  quote: 'editor-quote',
+  rtl: 'rtl',
+  text: {
+    bold: 'editor-text-bold',
+    code: 'editor-text-code',
+    hashtag: 'editor-text-hashtag',
+    italic: 'editor-text-italic',
+    overflowed: 'editor-text-overflowed',
+    strikethrough: 'editor-text-strikethrough',
+    underline: 'editor-text-underline',
+    underlineStrikethrough: 'editor-text-underlineStrikethrough',
+  },
+};
