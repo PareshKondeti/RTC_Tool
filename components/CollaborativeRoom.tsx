@@ -4,7 +4,7 @@ import { ClientSideSuspense, RoomProvider } from '@liveblocks/react/suspense'
 import { useOthers } from '@liveblocks/react'
 import { Editor } from '@/components/editor/Editor'
 import Header from '@/components/Header'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
+import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/nextjs'
 import ActiveCollaborators from './ActiveCollaborators';
 import { useEffect, useRef, useState } from 'react';
 import { Input } from './ui/input';
@@ -16,12 +16,13 @@ import PresenceAnnounce from './PresenceAnnounce';
 import PresenceToasts from './PresenceToasts';
 
 const CollaborativeRoom = ({ roomId, roomMetadata, users, currentUserType }: CollaborativeRoomProps) => {
+  const { user } = useUser();
   const [documentTitle, setDocumentTitle] = useState(roomMetadata.title);
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const updateTitleHandler = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === 'Enter') {
@@ -71,10 +72,15 @@ const CollaborativeRoom = ({ roomId, roomMetadata, users, currentUserType }: Col
     if (typeof window !== 'undefined') {
       ;(window as any).__ROOM_ID__ = roomId
       ;(window as any).__DOC_TITLE__ = documentTitle
-      ;(window as any).__USER_EMAIL__ = roomMetadata?.email || ''
+      ;(window as any).__USER_EMAIL__ = user?.primaryEmailAddress?.emailAddress || user?.emailAddresses?.[0]?.emailAddress || roomMetadata?.email || ''
     }
-  }, [roomId, documentTitle, roomMetadata])
+  }, [roomId, documentTitle, roomMetadata, user])
   
+
+  const emailToName = users.reduce<Record<string, string>>((acc, u) => {
+    if (u.email) acc[u.email] = u.name || u.email
+    return acc
+  }, {})
 
   return (
     <RoomProvider id={roomId} initialPresence={{ active: true }}>
@@ -92,7 +98,7 @@ const CollaborativeRoom = ({ roomId, roomMetadata, users, currentUserType }: Col
                   placeholder="Enter title"
                   onChange={(e) => setDocumentTitle(e.target.value)}
                   onKeyDown={updateTitleHandler}
-                  disable={!editing}
+                  disabled={!editing}
                   className="document-title-input"
                 />
               ) : (
@@ -136,7 +142,7 @@ const CollaborativeRoom = ({ roomId, roomMetadata, users, currentUserType }: Col
               </SignedIn>
             </div>
           </Header>
-        <Editor roomId={roomId} currentUserType={currentUserType} />
+        <Editor roomId={roomId} currentUserType={currentUserType} emailToName={emailToName} />
         </div>
       </ClientSideSuspense>
     </RoomProvider>

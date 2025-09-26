@@ -8,8 +8,8 @@ const ActiveCollaborators = () => {
 
   return (
     <ul className="collaborators-list">
-      {collaborators.map(({ id, avatar, name, color }) => (
-        <li key={id}>
+      {collaborators.map(({ id, avatar, name, color, email }: any) => (
+        <li key={id} title={`${name || 'Someone'}${email ? ` • ${email}` : ''}`}>
           <Image 
             src={avatar}
             alt={name}

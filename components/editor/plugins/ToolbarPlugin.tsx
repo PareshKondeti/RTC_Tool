@@ -27,7 +27,6 @@ import {
 import { $setBlocksType } from '@lexical/selection';
 import { $findMatchingParent } from '@lexical/utils';
 import React from 'react';
-import { useRoom } from '@liveblocks/react/suspense';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 
 async function saveVersion(editor: any) {
@@ -48,6 +47,10 @@ async function saveVersion(editor: any) {
 
     if (!res.ok) {
       console.error('Failed to save version')
+    } else {
+      try {
+        window.dispatchEvent(new CustomEvent('versions:updated', { detail: { roomId: (window as any).__ROOM_ID__ } }))
+      } catch {}
     }
   } catch (e) {
     console.error('Save version error', e)
@@ -67,9 +70,8 @@ function Divider() {
   return <div className="divider" />;
 }
 
-export default function ToolbarPlugin() {
+export default function ToolbarPlugin({ showExportActions = true }: { showExportActions?: boolean }) {
   const [editor] = useLexicalComposerContext();
-  const room = useRoom();
   const toolbarRef = useRef(null);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
@@ -178,10 +180,6 @@ export default function ToolbarPlugin() {
         onClick={() => {
           console.log('Undo clicked, canUndo:', canUndo);
           editor.dispatchCommand(UNDO_COMMAND, undefined);
-          // Broadcast undo to other users
-          try {
-            room.broadcastEvent({ type: 'undo' });
-          } catch {}
         }}
         className="toolbar-item spaced"
         aria-label="Undo"
@@ -193,10 +191,6 @@ export default function ToolbarPlugin() {
         onClick={() => {
           console.log('Redo clicked, canRedo:', canRedo);
           editor.dispatchCommand(REDO_COMMAND, undefined);
-          // Broadcast redo to other users
-          try {
-            room.broadcastEvent({ type: 'redo' });
-          } catch {}
         }}
         className="toolbar-item"
         aria-label="Redo"
@@ -204,6 +198,7 @@ export default function ToolbarPlugin() {
       >
         <i className="format redo" />
       </button>
+      {showExportActions && (<>
       <Divider />
       <button
         onClick={() => {
@@ -220,10 +215,11 @@ export default function ToolbarPlugin() {
             console.error('Export JSON failed', e);
           }
         }}
-        className="toolbar-item spaced"
+        className="toolbar-item spaced badge"
         aria-label="Export JSON"
+        title="Export JSON"
       >
-        Export JSON
+        <span className="badge-text">JS</span>
       </button>
       <button
         onClick={() => {
@@ -243,10 +239,11 @@ export default function ToolbarPlugin() {
             console.error('Export TXT failed', e);
           }
         }}
-        className="toolbar-item"
+        className="toolbar-item badge"
         aria-label="Export TXT"
+        title="Export TXT"
       >
-        Export TXT
+        <span className="badge-text">TX</span>
       </button>
       <button
         onClick={() => {
@@ -267,19 +264,21 @@ export default function ToolbarPlugin() {
             console.error('Export Word failed', e);
           }
         }}
-        className="toolbar-item"
+        className="toolbar-item badge"
         aria-label="Export Word"
+        title="Export Word"
       >
-        Export Word
+        <span className="badge-text">DOC</span>
       </button>
       <button
         onClick={() => saveVersion(editor)}
-        className="toolbar-item spaced"
+        className="toolbar-item spaced badge"
         aria-label="Save version"
         title="Save version"
       >
-        Save version
+        <span className="badge-text">SV</span>
       </button>
+      </>)}
       <button
         onClick={() => editor.update(() => toggleBlock('h1'))}
         data-active={activeBlock === 'h1' ? '' : undefined}

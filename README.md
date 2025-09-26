@@ -26,24 +26,24 @@ A modern, real-time collaborative document editor built with Next.js, featuring 
 ## 📦 Installation
 
 1. **Clone the repository**
-   ```bash
+```bash
    git clone https://github.com/PareshKondeti/RTC_Tool.git
    cd RTC_Tool
-   ```
+```
 
 2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
 3. **Set up environment variables**
    Create a `.env.local` file in the root directory:
-   ```env
+```env
    # Clerk Authentication
    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
    CLERK_SECRET_KEY=your_clerk_secret_key
-   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 
    # Liveblocks
    NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY=your_liveblocks_public_key
@@ -55,9 +55,9 @@ A modern, real-time collaborative document editor built with Next.js, featuring 
    ```
 
 4. **Run the development server**
-   ```bash
-   npm run dev
-   ```
+```bash
+npm run dev
+```
 
 5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
